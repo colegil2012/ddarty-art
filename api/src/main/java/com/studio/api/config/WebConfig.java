@@ -20,8 +20,21 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        // Split, then drop blanks. When api and web share a hostname (the
+        // production setup) there are no cross-origin requests, so this list
+        // is empty and no CORS rule is registered at all. Passing a lone ""
+        // origin would otherwise register an invalid rule.
+        String[] origins = java.util.Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toArray(String[]::new);
+
+        if (origins.length == 0) {
+            return;
+        }
+
         registry.addMapping("/api/**")
-                .allowedOrigins(allowedOrigins.split(","))
+                .allowedOrigins(origins)
                 .allowedMethods("GET", "POST", "OPTIONS")
                 .maxAge(3600);
     }

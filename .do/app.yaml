@@ -94,12 +94,6 @@ services:
         value: prod
         scope: RUN_TIME
 
-      # The app's own public URL, injected by App Platform. Fine as a
-      # same-origin CORS fallback.
-      - key: CORS_ORIGINS
-        value: ${APP_URL}
-        scope: RUN_TIME
-
       # Non-secret Spaces config. The bucket, CDN base, and keys are secrets,
       # set in the console.
       - key: SPACES_ENDPOINT

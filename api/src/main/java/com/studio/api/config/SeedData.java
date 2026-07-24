@@ -21,6 +21,7 @@ public class SeedData {
 
     private static final Logger log = LoggerFactory.getLogger(SeedData.class);
 
+    /*
     @Bean
     CommandLineRunner seedArtwork(ArtworkRepository repository) {
         return args -> {
@@ -85,5 +86,5 @@ public class SeedData {
         // Neutral placeholder tone; replaced by a real LQIP at upload time.
         a.setLqip("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciLz4=");
         return a;
-    }
+    }*/
 }

@@ -1,23 +1,33 @@
 # =============================================================================
-# DigitalOcean App Platform spec — artist-site
+# DigitalOcean App Platform spec — ddarty-art
 #
 # One app, two components:
 #   api  — Spring Boot container, receives /api/* and /actuator/*
 #   web  — SvelteKit (adapter-node) container, receives everything else
 #
-# Because both sit behind the same hostname, the browser only ever talks to
-# one origin. That means PUBLIC_API_BASE stays empty and CORS never engages —
-# same-origin requests don't trigger it. Only split this into two apps if you
-# need the API on its own hostname; then set PUBLIC_API_BASE and CORS_ORIGINS
-# accordingly.
+# Both sit behind one hostname, so the browser only ever talks to one origin.
+# PUBLIC_API_BASE stays empty and CORS never engages.
 #
-# Deploy:
+# ---------------------------------------------------------------------------
+# SECRETS ARE NOT IN THIS FILE ON PURPOSE.
+#
+# Values like MONGO_URI and the Spaces keys are set once in the DO control
+# panel (or via `doctl`) and left out of this spec entirely. If you put a
+# placeholder like CHANGE_ME here and push the spec, it OVERWRITES whatever
+# you set in the console with the literal string CHANGE_ME — which is exactly
+# what makes the API fall back to localhost and fail to connect to Mongo.
+#
+# So: this file declares the NON-secret config. Secrets are managed in the
+# console and survive spec updates because this file never mentions them.
+# ---------------------------------------------------------------------------
+#
+# First deploy (creates the app):
 #   doctl apps create --spec .do/app.yaml
-# Update:
+# Update config later:
 #   doctl apps update <APP_ID> --spec .do/app.yaml
 # =============================================================================
 
-name: artist-site
+name: ddarty-art
 region: nyc
 
 alerts:
@@ -36,7 +46,7 @@ services:
     instance_size_slug: apps-s-1vcpu-1gb
 
     github:
-      repo: YOUR_GH_USER/artist-site
+      repo: YOUR_GH_USER/ddarty-art
       branch: main
       deploy_on_push: true
 
@@ -58,7 +68,6 @@ services:
       timeout_seconds: 5
       failure_threshold: 6
 
-    # Give in-flight requests time to finish before the container dies.
     termination:
       drain_seconds: 15
       grace_period_seconds: 30
@@ -77,72 +86,37 @@ services:
         value: 3
         window: TEN_MINUTES
 
+    # Only NON-secret env vars live here. Secrets (MONGO_URI, SPACES_KEY,
+    # SPACES_SECRET, SPACES_BUCKET, SPACES_CDN_BASE, MAIL_*) are set in the
+    # console and intentionally omitted so spec pushes don't clobber them.
     envs:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
         scope: RUN_TIME
 
-      # Same-origin deployment: the browser never makes a cross-origin call,
-      # so this is only a fallback. Set it to the real origin if you split
-      # the API onto its own hostname.
+      # The app's own public URL, injected by App Platform. Fine as a
+      # same-origin CORS fallback.
       - key: CORS_ORIGINS
         value: ${APP_URL}
         scope: RUN_TIME
 
-      # --- Mongo -------------------------------------------------------------
-      # Managed Mongo (Atlas or DO) — set as an encrypted secret in the
-      # control panel, or via `doctl` with type SECRET.
-      - key: MONGO_URI
-        value: CHANGE_ME
-        scope: RUN_TIME
-        type: SECRET
-
-      # --- DigitalOcean Spaces ----------------------------------------------
+      # Non-secret Spaces config. The bucket, CDN base, and keys are secrets,
+      # set in the console.
       - key: SPACES_ENDPOINT
         value: https://nyc3.digitaloceanspaces.com
         scope: RUN_TIME
       - key: SPACES_REGION
         value: nyc3
         scope: RUN_TIME
-      - key: SPACES_BUCKET
-        value: CHANGE_ME
-        scope: RUN_TIME
-      - key: SPACES_CDN_BASE
-        value: CHANGE_ME
-        scope: RUN_TIME
-      - key: SPACES_KEY
-        value: CHANGE_ME
-        scope: RUN_TIME
-        type: SECRET
-      - key: SPACES_SECRET
-        value: CHANGE_ME
-        scope: RUN_TIME
-        type: SECRET
 
-      # --- Mail --------------------------------------------------------------
+      # Non-secret mail config. Host, user, password, and addresses are set
+      # in the console.
       - key: MAIL_ENABLED
         value: "true"
-        scope: RUN_TIME
-      - key: MAIL_HOST
-        value: CHANGE_ME
         scope: RUN_TIME
       - key: MAIL_PORT
         value: "587"
         scope: RUN_TIME
-      - key: MAIL_NOTIFY_TO
-        value: CHANGE_ME
-        scope: RUN_TIME
-      - key: MAIL_NOTIFY_FROM
-        value: CHANGE_ME
-        scope: RUN_TIME
-      - key: MAIL_USERNAME
-        value: CHANGE_ME
-        scope: RUN_TIME
-        type: SECRET
-      - key: MAIL_PASSWORD
-        value: CHANGE_ME
-        scope: RUN_TIME
-        type: SECRET
 
   # ---------------------------------------------------------------------------
   # SvelteKit frontend
@@ -155,7 +129,7 @@ services:
     instance_size_slug: apps-s-1vcpu-0.5gb
 
     github:
-      repo: YOUR_GH_USER/artist-site
+      repo: YOUR_GH_USER/ddarty-art
       branch: main
       deploy_on_push: true
 
@@ -182,7 +156,7 @@ services:
 
     envs:
       # Empty on purpose: api and web share a hostname, so relative /api
-      # requests resolve correctly and no CORS preflight ever fires.
+      # requests resolve and no CORS preflight fires.
       - key: PUBLIC_API_BASE
         value: ""
         scope: RUN_TIME
@@ -222,12 +196,12 @@ ingress:
 # =============================================================================
 # Domains — uncomment and set once DNS is ready.
 #
-# If the domain is on Cloudflare, keep the record DNS-only (grey) until the
-# certificate is issued, then switch to proxied with SSL mode Full (strict).
-# Flipping to proxied before the cert exists produces confusing 5xx errors.
+# On Cloudflare: keep the record DNS-only (grey) until the certificate issues,
+# then switch to proxied with SSL mode Full (strict). Flipping to proxied
+# before the cert exists produces confusing 5xx errors.
 # =============================================================================
 # domains:
-#   - domain: adaroswell.com
+#   - domain: ddarty.com
 #     type: PRIMARY
-#   - domain: www.adaroswell.com
+#   - domain: www.ddarty.com
 #     type: ALIAS

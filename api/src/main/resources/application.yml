@@ -2,10 +2,10 @@ spring:
   application:
     name: artist-api
   profiles:
-    active: local
+    default: local
   data:
     mongodb:
-      uri: ${MONGO_URI:mongodb://localhost:27017/ddarty}
+      uri: ${MONGO_URI:mongodb://localhost:27017/ddarty-art}
       auto-index-creation: true
   mail:
     host: ${MAIL_HOST:smtp.office365.com}

@@ -10,7 +10,7 @@ WORKDIR /build
 
 # Copy the POM first so the dependency layer caches independently of source.
 # A source-only change then skips the (slow) dependency download entirely.
-COPY pom.xml .
+COPY api/pom.xml .
 RUN mvn -B -e -ntp dependency:go-offline
 
 COPY api/src ./src

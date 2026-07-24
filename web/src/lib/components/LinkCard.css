@@ -1,0 +1,99 @@
+/* LinkCard.css — homepage highlight card with the uncover-on-hover curtain */
+
+.card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--c-ground-raised);
+  border: 1px solid var(--c-hairline);
+  overflow: hidden;
+  transition:
+    border-color var(--t-med) var(--e-out),
+    transform var(--t-med) var(--e-out);
+}
+
+.card--hovered {
+  border-color: var(--c-accent);
+  transform: translateY(-4px);
+}
+
+.card__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--c-ground-sunken);
+}
+
+.card__media img,
+.card__media-fallback {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.04);
+  transition: transform var(--t-slow) var(--e-out);
+}
+
+.card__media-fallback {
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      var(--c-ground-sunken) 0 12px,
+      var(--c-ground-raised) 12px 24px
+    );
+}
+
+.card--hovered .card__media img,
+.card--hovered .card__media-fallback {
+  transform: scale(1);
+}
+
+/* The curtain: covers the media, slides up and off on hover. */
+.card__curtain {
+  position: absolute;
+  inset: 0;
+  background: var(--c-ground);
+  transform-origin: top;
+  transition: transform var(--t-slow) var(--e-in-out);
+}
+
+.card--hovered .card__curtain {
+  transform: translateY(-100%);
+}
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-5);
+}
+
+.card__title {
+  font-size: var(--fs-h3);
+}
+
+.card__blurb {
+  color: var(--c-paper-dim);
+  font-size: var(--fs-small);
+  margin-bottom: var(--s-2);
+}
+
+.card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: auto;
+  color: var(--c-accent);
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+}
+
+.card__arrow {
+  width: 22px;
+  height: 11px;
+  transition: transform var(--t-med) var(--e-out);
+}
+
+.card--hovered .card__arrow {
+  transform: translateX(5px);
+}

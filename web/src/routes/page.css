@@ -1,0 +1,143 @@
+/* page.css — homepage only */
+
+/* --- Hero ---------------------------------------------------------------
+   Type is the hero. The name is set enormous and tight, the two lines
+   staggered, and it rises into place once on load. */
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 92svh;
+  padding-block: var(--s-10) var(--s-8);
+}
+
+.hero__inner {
+  width: 100%;
+}
+
+.hero__eyebrow {
+  display: block;
+  margin-bottom: var(--s-5);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity var(--t-slow) var(--e-out), transform var(--t-slow) var(--e-out);
+}
+
+.hero__title {
+  font-size: var(--fs-hero);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-hero);
+  font-weight: 300;
+  margin-bottom: var(--s-5);
+}
+
+.hero__line {
+  display: block;
+  overflow: hidden;
+}
+
+.hero__line--indent {
+  padding-left: 0.28em;
+  font-style: italic;
+  font-weight: 600;
+}
+
+/* Each hero element rises with a slight stagger. */
+.hero__title,
+.hero__lede,
+.hero__actions {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity var(--t-slow) var(--e-out), transform var(--t-slow) var(--e-out);
+}
+
+.hero__eyebrow  { transition-delay: 80ms; }
+.hero__title    { transition-delay: 160ms; }
+.hero__lede     { transition-delay: 300ms; }
+.hero__actions  { transition-delay: 420ms; }
+
+.hero--in .hero__eyebrow,
+.hero--in .hero__title,
+.hero--in .hero__lede,
+.hero--in .hero__actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero__lede {
+  max-width: 46ch;
+  color: var(--c-paper-dim);
+  font-size: var(--fs-body-lg);
+  margin-bottom: var(--s-6);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+
+/* Hairline that draws itself across the base of the hero. */
+.hero__rule {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 0;
+  height: 1px;
+  background: var(--c-hairline);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.4s var(--e-out) 560ms;
+}
+
+.hero--in .hero__rule {
+  transform: scaleX(1);
+}
+
+/* --- Random selection ---------------------------------------------------- */
+
+.selection {
+  padding-block: var(--s-8) var(--s-7);
+}
+
+.selection__head {
+  margin-bottom: var(--s-5);
+}
+
+.selection__title {
+  font-size: var(--fs-h2);
+  margin-top: var(--s-2);
+}
+
+/* --- Highlight cards ----------------------------------------------------- */
+
+.highlights {
+  padding-block: var(--s-7);
+}
+
+.highlights__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--s-4);
+}
+
+/* --- Closing ------------------------------------------------------------- */
+
+.closing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-5);
+  padding-block: var(--s-8);
+  border-top: 1px solid var(--c-hairline);
+  margin-top: var(--s-7);
+}
+
+.closing__text {
+  max-width: 48ch;
+  font-family: var(--f-display);
+  font-size: var(--fs-h3);
+  color: var(--c-paper-dim);
+}

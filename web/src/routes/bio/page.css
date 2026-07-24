@@ -1,0 +1,85 @@
+/* page.css — bio page only */
+
+.bio__head {
+  padding-block: calc(var(--s-10) + var(--s-4)) var(--s-6);
+  border-bottom: 1px solid var(--c-hairline);
+}
+
+.bio__title {
+  font-size: var(--fs-h1);
+  margin-top: var(--s-2);
+  max-width: 18ch;
+}
+
+.bio__body {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr);
+  gap: var(--s-8);
+  padding-block: var(--s-8);
+  align-items: start;
+}
+
+.bio__portrait {
+  position: sticky;
+  top: var(--s-9);
+}
+
+.bio__portrait-frame {
+  aspect-ratio: 3 / 4;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      var(--c-ground-sunken) 0 14px,
+      var(--c-ground-raised) 14px 28px
+    );
+  border: 1px solid var(--c-hairline);
+}
+
+.bio__caption {
+  margin-top: var(--s-3);
+  font-size: var(--fs-micro);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--c-paper-faint);
+}
+
+.bio__prose {
+  max-width: var(--w-text);
+}
+
+.bio__prose p {
+  margin-bottom: var(--s-5);
+  color: var(--c-paper-dim);
+}
+
+.bio__lede {
+  font-family: var(--f-display);
+  font-size: var(--fs-body-lg);
+  color: var(--c-paper) !important;
+}
+
+.bio__h2 {
+  font-size: var(--fs-h3);
+  margin-block: var(--s-7) var(--s-4);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--c-hairline);
+}
+
+.bio__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-7);
+}
+
+@media (max-width: 860px) {
+  .bio__body {
+    grid-template-columns: 1fr;
+    gap: var(--s-6);
+  }
+
+  .bio__portrait {
+    position: static;
+    max-width: 280px;
+  }
+}

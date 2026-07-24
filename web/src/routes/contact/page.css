@@ -1,0 +1,200 @@
+/* page.css — contact page only */
+
+.contact__head {
+  padding-block: calc(var(--s-10) + var(--s-4)) var(--s-6);
+  border-bottom: 1px solid var(--c-hairline);
+}
+
+.contact__title {
+  font-size: var(--fs-h1);
+  margin-top: var(--s-2);
+}
+
+.contact__lede {
+  max-width: 52ch;
+  margin-top: var(--s-4);
+  color: var(--c-paper-dim);
+  font-size: var(--fs-body-lg);
+}
+
+.contact__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.8fr);
+  gap: var(--s-8);
+  padding-block: var(--s-8);
+  align-items: start;
+}
+
+/* --- Form ---------------------------------------------------------------- */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+.form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-4);
+}
+
+.form__row--three {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.form__banner {
+  padding: var(--s-4);
+  border-left: 2px solid;
+  font-size: var(--fs-small);
+}
+
+.form__banner--ok {
+  border-color: var(--c-success);
+  background: color-mix(in srgb, var(--c-success) 10%, transparent);
+  color: var(--c-success);
+}
+
+.form__banner--bad {
+  border-color: var(--c-error);
+  background: color-mix(in srgb, var(--c-error) 10%, transparent);
+  color: var(--c-error);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.field__label {
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--c-paper-dim);
+}
+
+.field__optional {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--c-paper-faint);
+}
+
+.field__input {
+  width: 100%;
+  padding: var(--s-3) var(--s-4);
+  background: var(--c-ground-raised);
+  border: 1px solid var(--c-hairline);
+  border-radius: 0;
+  color: var(--c-paper);
+  font-size: var(--fs-body);
+  transition:
+    border-color var(--t-fast) var(--e-out),
+    background var(--t-fast) var(--e-out);
+}
+
+.field__input:hover {
+  border-color: var(--c-paper-faint);
+}
+
+.field__input:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  background: var(--c-ground);
+}
+
+.field__input--area {
+  resize: vertical;
+  min-height: 9rem;
+  font-family: var(--f-body);
+  line-height: var(--lh-body);
+}
+
+.field__input--bad {
+  border-color: var(--c-error);
+}
+
+.field__error {
+  color: var(--c-error);
+  font-size: var(--fs-small);
+}
+
+/* Honeypot stays in the DOM but out of sight and out of the tab order. */
+.form__trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form__submit {
+  align-self: flex-start;
+  margin-top: var(--s-2);
+}
+
+/* --- Aside --------------------------------------------------------------- */
+
+.aside {
+  position: sticky;
+  top: var(--s-9);
+  padding: var(--s-5);
+  background: var(--c-ground-raised);
+  border: 1px solid var(--c-hairline);
+}
+
+.aside__title {
+  font-size: var(--fs-h3);
+  margin-bottom: var(--s-5);
+}
+
+.aside__steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  list-style: none;
+}
+
+/* The steps are a real sequence, so the ordinal labels carry information. */
+.aside__step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  padding-left: var(--s-4);
+  border-left: 1px solid var(--c-hairline);
+  color: var(--c-paper-dim);
+  font-size: var(--fs-small);
+}
+
+.aside__step-label {
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+
+.aside__note {
+  margin-top: var(--s-6);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--c-hairline);
+  font-size: var(--fs-small);
+  color: var(--c-paper-dim);
+}
+
+@media (max-width: 900px) {
+  .contact__body {
+    grid-template-columns: 1fr;
+  }
+
+  .aside {
+    position: static;
+  }
+
+  .form__row,
+  .form__row--three {
+    grid-template-columns: 1fr;
+  }
+}

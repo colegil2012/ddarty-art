@@ -18,7 +18,7 @@
     {
       href: '/bio',
       eyebrow: 'The person',
-      title: 'About Ada',
+      title: 'About Daniel',
       blurb: 'Twelve years of painting the same few miles of river, and why that has not gotten old yet.',
       cta: 'Read more'
     },
@@ -33,20 +33,19 @@
 </script>
 
 <svelte:head>
-  <title>Ada Roswell — Painter</title>
-  <meta name="description" content="Paintings, drawings, and commissioned work by Ada Roswell, a painter working in Louisville, Kentucky." />
+  <title>Daniel Daugherty — Digital Artist</title>
+  <meta name="description" content="Stylized digital art, including portraits, landscapes, and work made from your own photographs." />
 </svelte:head>
 
 <section class="hero" class:hero--in={mounted}>
   <div class="hero__inner shell">
-    <span class="eyebrow hero__eyebrow">Painter · Louisville, Kentucky</span>
+    <span class="eyebrow hero__eyebrow">Artist · Bum Fuck, Florida</span>
     <h1 class="hero__title">
-      <span class="hero__line">Ada</span>
-      <span class="hero__line hero__line--indent">Roswell</span>
+      <span class="hero__line">Daniel</span>
+      <span class="hero__line hero__line--indent">Daugherty</span>
     </h1>
     <p class="hero__lede">
-      Oil, ink, and graphite. Mostly the same stretch of river, painted at
-      different hours until it stops looking familiar.
+      Stylized Character portraits, Scenes, Landscapes and whatever else I feel like making.
     </p>
     <div class="hero__actions">
       <a href="/gallery" class="btn btn--solid">See the work</a>

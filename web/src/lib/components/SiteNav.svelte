@@ -21,8 +21,8 @@
 <header class="nav" class:nav--scrolled={scrolled}>
   <div class="nav__inner shell">
     <a href="/" class="nav__mark" onclick={() => (open = false)}>
-      <span class="nav__mark-name">Ada Roswell</span>
-      <span class="nav__mark-role">Painter</span>
+      <span class="nav__mark-name">ddarty.com</span>
+      <span class="nav__mark-role">Digital Gallery</span>
     </a>
 
     <button

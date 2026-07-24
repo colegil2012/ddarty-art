@@ -34,7 +34,6 @@
 
 .hero__line {
   display: block;
-  overflow: hidden;
 }
 
 .hero__line--indent {

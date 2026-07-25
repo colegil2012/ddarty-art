@@ -1,236 +1,125 @@
-# =============================================================================
-# DigitalOcean App Platform spec — ddarty-art
-#
-# One app, two components:
-#   api  — Spring Boot container, receives /api/* and /actuator/*
-#   web  — SvelteKit (adapter-node) container, receives everything else
-#
-# Both sit behind one hostname, so the browser only ever talks to one origin.
-# PUBLIC_API_BASE stays empty and CORS never engages.
-#
-# ---------------------------------------------------------------------------
-# SECRETS ARE NOT IN THIS FILE ON PURPOSE.
-#
-# Values like MONGO_URI and the Spaces keys are set once in the DO control
-# panel (or via `doctl`) and left out of this spec entirely. If you put a
-# placeholder like CHANGE_ME here and push the spec, it OVERWRITES whatever
-# you set in the console with the literal string CHANGE_ME — which is exactly
-# what makes the API fall back to localhost and fail to connect to Mongo.
-#
-# So: this file declares the NON-secret config. Secrets are managed in the
-# console and survive spec updates because this file never mentions them.
-# ---------------------------------------------------------------------------
-#
-# First deploy (creates the app):
-#   doctl apps create --spec .do/app.yaml
-# Update config later:
-#   doctl apps update <APP_ID> --spec .do/app.yaml
-# =============================================================================
-
-name: ddarty-art
-region: nyc
-
 alerts:
-  - rule: DEPLOYMENT_FAILED
-  - rule: DOMAIN_FAILED
-
-services:
-  # ---------------------------------------------------------------------------
-  # Spring Boot API
-  # ---------------------------------------------------------------------------
-  - name: api
-    dockerfile_path: api/Dockerfile
-    source_dir: /
-    http_port: 8080
-    instance_count: 1
-    instance_size_slug: apps-s-1vcpu-1gb
-
-    github:
-      repo: colegil2012/ddarty-art
-      branch: main
-      deploy_on_push: true
-
-    # Readiness: pulled from rotation while warming, put back when ready.
-    health_check:
-      http_path: /actuator/health/readiness
-      initial_delay_seconds: 30
-      period_seconds: 10
-      timeout_seconds: 5
-      success_threshold: 1
-      failure_threshold: 5
-
-    # Liveness: restarts the container if the JVM wedges. Deliberately more
-    # forgiving than readiness so a slow GC pause doesn't cause a restart loop.
-    liveness_health_check:
-      http_path: /actuator/health/liveness
-      initial_delay_seconds: 45
-      period_seconds: 15
-      timeout_seconds: 5
-      failure_threshold: 6
-
-    termination:
-      drain_seconds: 15
-      grace_period_seconds: 30
-
-    alerts:
-      - rule: CPU_UTILIZATION
-        operator: GREATER_THAN
-        value: 80
-        window: FIVE_MINUTES
-      - rule: MEM_UTILIZATION
-        operator: GREATER_THAN
-        value: 85
-        window: FIVE_MINUTES
-      - rule: RESTART_COUNT
-        operator: GREATER_THAN
-        value: 3
-        window: TEN_MINUTES
-
-    # Only NON-secret env vars live here. Secrets (MONGO_URI, SPACES_KEY,
-    # SPACES_SECRET, SPACES_BUCKET, SPACES_CDN_BASE, MAIL_*) are set in the
-    # console and intentionally omitted so spec pushes don't clobber them.
-    envs:
-      - key: SPRING_PROFILES_ACTIVE
-        value: prod
-        scope: RUN_TIME
-
-      # Non-secret Spaces config. The bucket, CDN base, and keys are secrets,
-      # set in the console.
-      - key: SPACES_ENDPOINT
-        value: https://nyc3.digitaloceanspaces.com
-        scope: RUN_TIME
-      - key: SPACES_REGION
-        value: nyc3
-        scope: RUN_TIME
-
-      - key: MONGO_URI
-        value: ${celtech-dev.DATABASE_URL}
-        scope: RUN_TIME
-
-      - key: SPACES_BUCKET
-        value: ddarty-art
-        scope: RUN_AND_BUILD_TIME
-
-      - key: SPACES_CDN_BASE
-        value: https://celtech-solutions-spaces.nyc3.cdn.digitaloceanspaces.com
-        scope: RUN_AND_BUILD_TIME
-
-      - key: SPACES_KEY
-        scope: RUN_AND_BUILD_TIME
-        type: SECRET
-        value: EV[1:Pg2lsCbj32lWyrkuRVetX5CiaYLiY47K:mYpTak456jT3snqWvXrw4GYg52RW1UCJQg/Xa3altdeBjFlY]
-
-      - key: SPACES_SECRET
-        scope: RUN_AND_BUILD_TIME
-        type: SECRET
-        value: EV[1:0wpezuloRfCdZ9RX70BQfJHFhFvH70dl:xh1ou071JMPGqBzCxTPsoJu/9c6O8XKwbAss0rc4/SeI21UuMGSOUIsMrF5xTqGDyogIraQRHCJynsQ=]
-
-      - key: MAIL_PASSWORD
-        scope: RUN_AND_BUILD_TIME
-        type: SECRET
-        value: EV[1:gAS9uEueGMTA3iKBnW22nEVs4VM45T4I:hbSwT1fybzDlb+w0R9FCIeUkkqkUvvmtW+9CKiDFO2s=]
-
-      # Non-secret mail config. Host, user, password, and addresses are set
-      # in the console.
-      - key: MAIL_ENABLED
-        value: "true"
-        scope: RUN_TIME
-      - key: MAIL_PORT
-        value: "587"
-        scope: RUN_TIME
-
-  # ---------------------------------------------------------------------------
-  # SvelteKit frontend
-  # ---------------------------------------------------------------------------
-  - name: web
-    dockerfile_path: web/Dockerfile
-    source_dir: /
-    http_port: 3000
-    instance_count: 1
-    instance_size_slug: apps-s-1vcpu-0.5gb
-
-    github:
-      repo: colegil2012/ddarty-art
-      branch: main
-      deploy_on_push: true
-
-    health_check:
-      http_path: /
-      initial_delay_seconds: 10
-      period_seconds: 10
-      timeout_seconds: 5
-      failure_threshold: 5
-
-    termination:
-      drain_seconds: 10
-      grace_period_seconds: 20
-
-    alerts:
-      - rule: CPU_UTILIZATION
-        operator: GREATER_THAN
-        value: 80
-        window: FIVE_MINUTES
-      - rule: RESTART_COUNT
-        operator: GREATER_THAN
-        value: 3
-        window: TEN_MINUTES
-
-    envs:
-      # Empty on purpose: api and web share a hostname, so relative /api
-      # requests resolve and no CORS preflight fires.
-      - key: PUBLIC_API_BASE
-        value: ""
-        scope: RUN_TIME
-      - key: NODE_ENV
-        value: production
-        scope: RUN_TIME
-
-
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
 databases:
-  - name: celtech-dev
-    engine: MONGODB
-    production: true
-    cluster_name: celtech-dev
-
-
-# =============================================================================
-# Ingress — order matters. First match wins, so the specific /api and
-# /actuator prefixes must precede the catch-all /.
-#
-# preserve_path_prefix: true is essential. Without it App Platform strips the
-# matched prefix, so /api/gallery arrives at Spring as /gallery and 404s.
-# =============================================================================
+- cluster_name: celtech-dev
+  engine: MONGODB
+  name: celtech-dev
+  production: true
+domains:
+- domain: ddarty.com
+  type: PRIMARY
 ingress:
   rules:
-    - match:
-        path:
-          prefix: /api
-      component:
-        name: api
-        preserve_path_prefix: true
-
-    - match:
-        path:
-          prefix: /actuator
-      component:
-        name: api
-        preserve_path_prefix: true
-
-    - match:
-        path:
-          prefix: /
-      component:
-        name: web
-
-# =============================================================================
-# Domains — uncomment and set once DNS is ready.
-#
-# On Cloudflare: keep the record DNS-only (grey) until the certificate issues,
-# then switch to proxied with SSL mode Full (strict). Flipping to proxied
-# before the cert exists produces confusing 5xx errors.
-# =============================================================================
-# domains:
-#   - domain: ddarty.com
-#     type: PRIMARY
-#   - domain: www.ddarty.com
-#     type: ALIAS
+  - component:
+      name: api
+      preserve_path_prefix: true
+    match:
+      path:
+        prefix: /api
+  - component:
+      name: api
+      preserve_path_prefix: true
+    match:
+      path:
+        prefix: /actuator
+  - component:
+      name: web
+    match:
+      path:
+        prefix: /
+name: ddarty-art
+region: nyc
+services:
+- alerts:
+  - operator: GREATER_THAN
+    rule: CPU_UTILIZATION
+    value: 80
+    window: FIVE_MINUTES
+  - operator: GREATER_THAN
+    rule: MEM_UTILIZATION
+    value: 85
+    window: FIVE_MINUTES
+  - operator: GREATER_THAN
+    rule: RESTART_COUNT
+    value: 3
+    window: TEN_MINUTES
+  dockerfile_path: api/Dockerfile
+  envs:
+  - key: SPRING_PROFILES_ACTIVE
+    scope: RUN_TIME
+    value: prod
+  - key: SPACES_ENDPOINT
+    scope: RUN_TIME
+    value: https://nyc3.digitaloceanspaces.com
+  - key: SPACES_REGION
+    scope: RUN_TIME
+    value: nyc3
+  - key: MONGO_URI
+    scope: RUN_TIME
+    value: ${celtech-dev.DATABASE_URL}
+  - key: MAIL_ENABLED
+    scope: RUN_TIME
+    value: "true"
+  - key: MAIL_PORT
+    scope: RUN_TIME
+    value: "587"
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: colegil2012/ddarty-art
+  health_check:
+    failure_threshold: 5
+    http_path: /actuator/health/readiness
+    initial_delay_seconds: 30
+    period_seconds: 10
+    success_threshold: 1
+    timeout_seconds: 5
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: apps-s-1vcpu-1gb
+  liveness_health_check:
+    failure_threshold: 6
+    http_path: /actuator/health/liveness
+    initial_delay_seconds: 45
+    period_seconds: 15
+    timeout_seconds: 5
+  name: api
+  source_dir: /
+  termination:
+    drain_seconds: 15
+    grace_period_seconds: 30
+- alerts:
+  - operator: GREATER_THAN
+    rule: CPU_UTILIZATION
+    value: 80
+    window: FIVE_MINUTES
+  - operator: GREATER_THAN
+    rule: RESTART_COUNT
+    value: 3
+    window: TEN_MINUTES
+  dockerfile_path: web/Dockerfile
+  envs:
+  - key: PUBLIC_API_BASE
+    scope: RUN_TIME
+  - key: NODE_ENV
+    scope: RUN_TIME
+    value: production
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: colegil2012/ddarty-art
+  health_check:
+    failure_threshold: 5
+    http_path: /
+    initial_delay_seconds: 10
+    period_seconds: 10
+    timeout_seconds: 5
+  http_port: 3000
+  instance_count: 1
+  instance_size_slug: apps-s-1vcpu-0.5gb
+  name: web
+  source_dir: /
+  termination:
+    drain_seconds: 10
+    grace_period_seconds: 20

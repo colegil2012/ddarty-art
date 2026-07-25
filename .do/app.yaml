@@ -46,7 +46,7 @@ services:
     instance_size_slug: apps-s-1vcpu-1gb
 
     github:
-      repo: YOUR_GH_USER/ddarty-art
+      repo: colegil2012/ddarty-art
       branch: main
       deploy_on_push: true
 

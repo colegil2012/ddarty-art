@@ -6,8 +6,8 @@
 <footer class="footer">
   <div class="footer__inner shell">
     <div class="footer__brand">
-      <span class="footer__name">Ada Roswell</span>
-      <p class="footer__line">Oil, ink, and graphite. Studio in Louisville, Kentucky.</p>
+      <span class="footer__name">Daniel Daugherty</span>
+      <p class="footer__line">Digital Artist specialized in stylized illustrations</p>
     </div>
 
     <nav class="footer__links" aria-label="Footer">
@@ -18,7 +18,7 @@
   </div>
 
   <div class="footer__base shell">
-    <span>&copy; {year} Ada Roswell</span>
+    <span>&copy; {year} Daniel Daugherty</span>
     <a href="/contact" class="link-accent">Commission a piece</a>
   </div>
 </footer>

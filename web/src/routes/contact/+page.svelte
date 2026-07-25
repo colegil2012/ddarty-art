@@ -43,7 +43,7 @@
 </script>
 
 <svelte:head>
-  <title>Contact — Ada Roswell</title>
+  <title>Contact — Daniel Daugherty</title>
   <meta name="description" content="Request a commissioned painting or ask about available work." />
 </svelte:head>
 

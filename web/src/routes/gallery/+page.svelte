@@ -32,7 +32,7 @@
 </script>
 
 <svelte:head>
-  <title>Gallery — Ada Roswell</title>
+  <title>Gallery — Daniel Daugherty</title>
 </svelte:head>
 
 <svelte:window on:keydown={onKeydown} />

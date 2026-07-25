@@ -20,8 +20,8 @@
   --c-paper-dim:     #A8A4B0;  /* secondary text, captions */
   --c-paper-faint:   #6B6774;  /* tertiary: metadata, disabled */
 
-  --c-accent:        #C8F03C;  /* interactive only — never decorative */
-  --c-accent-dim:    #9BBC2A;
+  --c-accent:        #99d6ff;  /* interactive only — never decorative */
+  --c-accent-dim:    #66a3ff;
   --c-accent-ink:    #16151A;  /* text placed on top of accent */
 
   --c-error:         #FF6B5A;

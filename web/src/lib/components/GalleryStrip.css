@@ -12,6 +12,7 @@
   scroll-snap-type: x mandatory;
   padding-block: var(--s-2) var(--s-5);
   padding-inline: var(--gutter);
+  margin-inline: var(--s-6);
   scrollbar-width: thin;
   scrollbar-color: var(--c-hairline) transparent;
 }
@@ -30,7 +31,7 @@
 }
 
 .strip__item--skeleton {
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1 / 1;
   background: linear-gradient(
     100deg,
     var(--c-ground-raised) 30%,
@@ -54,11 +55,12 @@
 
 .strip__figure img {
   width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
+  height: auto;
+  max-height: 380px;
+  object-fit: contain;
   transition:
-    transform var(--t-slow) var(--e-out),
-    filter var(--t-med) var(--e-out);
+          transform var(--t-slow) var(--e-out),
+          filter var(--t-med) var(--e-out);
   filter: saturate(0.85);
 }
 

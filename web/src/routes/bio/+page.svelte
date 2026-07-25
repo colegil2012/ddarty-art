@@ -3,8 +3,8 @@
 </script>
 
 <svelte:head>
-  <title>About — Ada Roswell</title>
-  <meta name="description" content="About Ada Roswell, a painter working in oil, ink, and graphite in Louisville, Kentucky." />
+  <title>About — Daniel Daugherty</title>
+  <meta name="description" content="About Daniel, a digital artist specialized in stylized illustrations." />
 </svelte:head>
 
 <article class="bio">

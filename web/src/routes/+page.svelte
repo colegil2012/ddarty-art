@@ -13,21 +13,24 @@
       eyebrow: 'The work',
       title: 'Gallery',
       blurb: 'Paintings, drawings, and studies from the last four years — including the pieces that never left the studio.',
-      cta: 'See the gallery'
+      cta: 'See the gallery',
+      image: '/images/thumb/life.png'
     },
     {
       href: '/bio',
       eyebrow: 'The person',
       title: 'About Daniel',
       blurb: 'Twelve years of painting the same few miles of river, and why that has not gotten old yet.',
-      cta: 'Read more'
+      cta: 'Read more',
+      image: '/images/thumb/me.png'
     },
     {
       href: '/contact',
       eyebrow: 'Commissions',
       title: 'Get a custom piece',
       blurb: 'Portraits, landscapes, and work made from your own photographs. Currently booking for spring.',
-      cta: 'Start a request'
+      cta: 'Start a request',
+      image: '/images/thumb/mouse_and_frog.png'
     }
   ];
 </script>

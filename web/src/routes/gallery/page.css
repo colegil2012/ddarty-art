@@ -65,7 +65,9 @@
 
 .tile {
   position: relative;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0;
   border: none;
   background: var(--c-ground-sunken);
@@ -75,8 +77,9 @@
 
 .tile img {
   width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
+  height: auto;
+  max-height: 420px;
+  object-fit: contain;
   transition: transform var(--t-slow) var(--e-out);
 }
 

@@ -8,7 +8,7 @@
   position: relative;
   display: flex;
   align-items: flex-end;
-  min-height: 92svh;
+  min-height: 50svh;
   padding-block: var(--s-10) var(--s-8);
 }
 

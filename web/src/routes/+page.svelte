@@ -14,7 +14,7 @@
       title: 'Gallery',
       blurb: 'Paintings, drawings, and studies from the last four years — including the pieces that never left the studio.',
       cta: 'See the gallery',
-      image: '/images/thumb/life.png'
+      pieceTitle: 'Life'
     },
     {
       href: '/bio',
@@ -22,7 +22,7 @@
       title: 'About Daniel',
       blurb: 'Twelve years of painting the same few miles of river, and why that has not gotten old yet.',
       cta: 'Read more',
-      image: '/images/thumb/me.png'
+      pieceTitle: 'Me'
     },
     {
       href: '/contact',
@@ -30,9 +30,23 @@
       title: 'Get a custom piece',
       blurb: 'Portraits, landscapes, and work made from your own photographs. Currently booking for spring.',
       cta: 'Start a request',
-      image: '/images/thumb/mouse_and_frog.png'
+      pieceTitle: 'Cyber Samurai'
     }
   ];
+
+  let imagesByTitle = $state({});
+
+  onMount(async () => {
+    mounted = true;
+    try {
+      const all = await api.gallery();               // every piece
+      imagesByTitle = Object.fromEntries(
+        all.map(p => [p.title, p.thumbUrl])
+      );
+    } catch {
+      imagesByTitle = {};
+    }
+  });
 </script>
 
 <svelte:head>
@@ -70,7 +84,7 @@
 <section class="highlights shell">
   <div class="highlights__grid">
     {#each cards as card, i}
-      <LinkCard {...card} index={i} />
+      <LinkCard {...card} image={imagesByTitle[card.pieceTitle] ?? null} index={i} />
     {/each}
   </div>
 </section>

@@ -103,6 +103,10 @@ services:
         value: nyc3
         scope: RUN_TIME
 
+      - key: MONGO_URI
+        value: ${celtech-dev.DATABASE_URL}
+        scope: RUN_TIME
+
       # Non-secret mail config. Host, user, password, and addresses are set
       # in the console.
       - key: MAIL_ENABLED
@@ -157,6 +161,14 @@ services:
       - key: NODE_ENV
         value: production
         scope: RUN_TIME
+
+
+databases:
+  - name: celtech-dev
+    engine: MONGODB
+    production: true
+    cluster_name: celtech-dev
+
 
 # =============================================================================
 # Ingress — order matters. First match wins, so the specific /api and

@@ -107,6 +107,29 @@ services:
         value: ${celtech-dev.DATABASE_URL}
         scope: RUN_TIME
 
+      - key: SPACES_BUCKET
+        value: ddarty-art
+        scope: RUN_AND_BUILD_TIME
+
+      - key: SPACES_CDN_BASE
+        value: https://celtech-solutions-spaces.nyc3.cdn.digitaloceanspaces.com
+        scope: RUN_AND_BUILD_TIME
+
+      - key: SPACES_KEY
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+        value: EV[1:Pg2lsCbj32lWyrkuRVetX5CiaYLiY47K:mYpTak456jT3snqWvXrw4GYg52RW1UCJQg/Xa3altdeBjFlY]
+
+      - key: SPACES_SECRET
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+        value: EV[1:0wpezuloRfCdZ9RX70BQfJHFhFvH70dl:xh1ou071JMPGqBzCxTPsoJu/9c6O8XKwbAss0rc4/SeI21UuMGSOUIsMrF5xTqGDyogIraQRHCJynsQ=]
+
+      - key: MAIL_PASSWORD
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+        value: EV[1:gAS9uEueGMTA3iKBnW22nEVs4VM45T4I:hbSwT1fybzDlb+w0R9FCIeUkkqkUvvmtW+9CKiDFO2s=]
+
       # Non-secret mail config. Host, user, password, and addresses are set
       # in the console.
       - key: MAIL_ENABLED

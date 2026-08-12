@@ -43,7 +43,7 @@
 </script>
 
 <svelte:head>
-  <title>Contact — Daniel Daugherty</title>
+  <title>Contact | DDarty</title>
   <meta name="description" content="Request a commissioned painting or ask about available work." />
 </svelte:head>
 

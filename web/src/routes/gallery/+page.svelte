@@ -1,11 +1,14 @@
 <script>
-  import { onMount } from 'svelte';
   import { fade, scale } from 'svelte/transition';
-  import { api } from '$lib/api/client.js';
   import './page.css';
 
-  let pieces = $state([]);
-  let status = $state('loading');
+  let { data } = $props();
+
+  const pieces = $derived(data.pieces ?? []);
+  const status = $derived(
+    data.loadError ? 'error' : pieces.length ? 'ready' : 'empty'
+  );
+
   let activeTag = $state('all');
   let selected = $state(null);
 
@@ -17,22 +20,20 @@
     activeTag === 'all' ? pieces : pieces.filter((p) => p.tags?.includes(activeTag))
   );
 
-  onMount(async () => {
-    try {
-      pieces = (await api.gallery()) ?? [];
-      status = pieces.length ? 'ready' : 'empty';
-    } catch {
-      status = 'error';
-    }
-  });
-
   function onKeydown(event) {
     if (event.key === 'Escape') selected = null;
+  }
+
+  /** Turns a tag slug like "cyber-samurai" into "Cyber samurai". */
+  function label(tag) {
+    if (tag === 'all') return 'all';
+    const spaced = (tag ?? '').replace(/-/g, ' ');
+    return spaced.charAt(0).toUpperCase() + spaced.slice(1);
   }
 </script>
 
 <svelte:head>
-  <title>Gallery — Daniel Daugherty</title>
+  <title>Gallery | DDarty</title>
 </svelte:head>
 
 <svelte:window on:keydown={onKeydown} />
@@ -42,14 +43,14 @@
   <h1 class="gallery-head__title">Gallery</h1>
 
   {#if status === 'ready'}
-    <div class="filters" role="group" aria-label="Filter by medium">
+    <div class="filters" role="group" aria-label="Filter by tag">
       {#each tags as tag}
         <button
           class="filters__tag"
           class:filters__tag--on={activeTag === tag}
           onclick={() => (activeTag = tag)}
         >
-          {tag}
+          {label(tag)}
         </button>
       {/each}
     </div>
@@ -57,13 +58,7 @@
 </header>
 
 <div class="gallery shell">
-  {#if status === 'loading'}
-    <div class="gallery__grid">
-      {#each Array(6) as _}
-        <div class="gallery__skeleton"></div>
-      {/each}
-    </div>
-  {:else if status === 'ready'}
+  {#if status === 'ready'}
     <div class="gallery__grid">
       {#each visible as piece (piece.id)}
         <button

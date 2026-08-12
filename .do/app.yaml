@@ -1,125 +1,61 @@
-alerts:
-- rule: DEPLOYMENT_FAILED
-- rule: DOMAIN_FAILED
-databases:
-- cluster_name: celtech-dev
-  engine: MONGODB
-  name: celtech-dev
-  production: true
-domains:
-- domain: ddarty.com
-  type: PRIMARY
-ingress:
-  rules:
-  - component:
-      name: api
-      preserve_path_prefix: true
-    match:
-      path:
-        prefix: /api
-  - component:
-      name: api
-      preserve_path_prefix: true
-    match:
-      path:
-        prefix: /actuator
-  - component:
-      name: web
-    match:
-      path:
-        prefix: /
 name: ddarty-art
 region: nyc
+
+alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
+
+# NO databases: block — the frontend has no DB. Removing it detaches the binding.
+
 services:
-- alerts:
-  - operator: GREATER_THAN
-    rule: CPU_UTILIZATION
-    value: 80
-    window: FIVE_MINUTES
-  - operator: GREATER_THAN
-    rule: MEM_UTILIZATION
-    value: 85
-    window: FIVE_MINUTES
-  - operator: GREATER_THAN
-    rule: RESTART_COUNT
-    value: 3
-    window: TEN_MINUTES
-  dockerfile_path: api/Dockerfile
-  envs:
-  - key: SPRING_PROFILES_ACTIVE
-    scope: RUN_TIME
-    value: prod
-  - key: SPACES_ENDPOINT
-    scope: RUN_TIME
-    value: https://nyc3.digitaloceanspaces.com
-  - key: SPACES_REGION
-    scope: RUN_TIME
-    value: nyc3
-  - key: MONGO_URI
-    scope: RUN_TIME
-    value: ${celtech-dev.DATABASE_URL}
-  - key: MAIL_ENABLED
-    scope: RUN_TIME
-    value: "true"
-  - key: MAIL_PORT
-    scope: RUN_TIME
-    value: "587"
-  github:
-    branch: main
-    deploy_on_push: true
-    repo: colegil2012/ddarty-art
-  health_check:
-    failure_threshold: 5
-    http_path: /actuator/health/readiness
-    initial_delay_seconds: 30
-    period_seconds: 10
-    success_threshold: 1
-    timeout_seconds: 5
-  http_port: 8080
-  instance_count: 1
-  instance_size_slug: apps-s-1vcpu-1gb
-  liveness_health_check:
-    failure_threshold: 6
-    http_path: /actuator/health/liveness
-    initial_delay_seconds: 45
-    period_seconds: 15
-    timeout_seconds: 5
-  name: api
-  source_dir: /
-  termination:
-    drain_seconds: 15
-    grace_period_seconds: 30
-- alerts:
-  - operator: GREATER_THAN
-    rule: CPU_UTILIZATION
-    value: 80
-    window: FIVE_MINUTES
-  - operator: GREATER_THAN
-    rule: RESTART_COUNT
-    value: 3
-    window: TEN_MINUTES
-  dockerfile_path: web/Dockerfile
-  envs:
-  - key: PUBLIC_API_BASE
-    scope: RUN_TIME
-  - key: NODE_ENV
-    scope: RUN_TIME
-    value: production
-  github:
-    branch: main
-    deploy_on_push: true
-    repo: colegil2012/ddarty-art
-  health_check:
-    failure_threshold: 5
-    http_path: /
-    initial_delay_seconds: 10
-    period_seconds: 10
-    timeout_seconds: 5
-  http_port: 3000
-  instance_count: 1
-  instance_size_slug: apps-s-1vcpu-0.5gb
-  name: web
-  source_dir: /
-  termination:
-    drain_seconds: 10
-    grace_period_seconds: 20
+  - name: web
+    dockerfile_path: web/Dockerfile
+    source_dir: /
+    http_port: 3000
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-0.5gb
+
+    github:
+      repo: colegil2012/ddarty-art
+      branch: main
+      deploy_on_push: true
+
+    health_check:
+      http_path: /
+      initial_delay_seconds: 10
+      period_seconds: 10
+      timeout_seconds: 5
+      failure_threshold: 5
+
+    termination:
+      drain_seconds: 10
+      grace_period_seconds: 20
+
+    envs:
+      # Now a REAL cross-origin URL — the frontend calls celtech for data.
+      - key: PUBLIC_API_BASE
+        value: https://celtech-solutions.tech
+        scope: RUN_TIME
+      - key: PUBLIC_SITE_SLUG
+        value: ddarty
+        scope: RUN_TIME
+      - key: NODE_ENV
+        value: production
+        scope: RUN_TIME
+
+# Ingress collapses to a single catch-all — no /api or /actuator split anymore,
+# since there's no api component to route to.
+ingress:
+  rules:
+    - match:
+        path:
+          prefix: /
+      component:
+        name: web
+
+# Keep your domains block if the live spec had one — don't drop it.
+# domains:
+#   - domain: ddarty.com
+#     type: PRIMARY
+#   - domain: www.ddarty.com
+#     type: ALIAS

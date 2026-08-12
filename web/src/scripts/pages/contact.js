@@ -97,14 +97,28 @@ export async function submitForm(form) {
   }
 
   try {
+    // The centralized inquiry DTO is intentionally flat (name/email/phone/
+    // company/message/subject/website). Fold Ddarty's commission selects into
+    // a readable preamble on the message, and use the request type as subject.
+    const requestLabel =
+        REQUEST_TYPES.find((o) => o.value === form.requestType)?.label ?? 'Inquiry';
+    const budgetLabel =
+        BUDGET_RANGES.find((o) => o.value === form.budgetRange)?.label ?? '';
+    const timelineLabel =
+        TIMELINES.find((o) => o.value === form.timeline)?.label ?? '';
+
+    const preamble =
+        `Request: ${requestLabel}\n` +
+        `Budget: ${budgetLabel}\n` +
+        `Timeline: ${timelineLabel}\n\n`;
+
     const response = await api.submitInquiry({
       name: form.name.trim(),
       email: form.email.trim(),
       phone: form.phone.trim(),
-      message: form.message.trim(),
-      requestType: form.requestType,
-      budgetRange: form.budgetRange,
-      timeline: form.timeline,
+      company: '',
+      message: preamble + form.message.trim(),
+      subject: `Commission enquiry — ${requestLabel}`,
       website: form.website
     });
 

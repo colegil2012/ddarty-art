@@ -35,6 +35,13 @@
   border: 1px solid var(--c-hairline);
 }
 
+.bio__portrait-frame--img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
 .bio__caption {
   margin-top: var(--s-3);
   font-size: var(--fs-micro);

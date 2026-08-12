@@ -4,6 +4,8 @@
   import { onMount } from 'svelte';
   import './page.css';
 
+  let { data } = $props();
+
   let mounted = $state(false);
   onMount(() => { mounted = true; });
 
@@ -34,23 +36,14 @@
     }
   ];
 
-  let imagesByTitle = $state({});
-
-  onMount(async () => {
-    mounted = true;
-    try {
-      const all = await api.gallery();               // every piece
-      imagesByTitle = Object.fromEntries(
-        all.map(p => [p.title, p.thumbUrl])
-      );
-    } catch {
-      imagesByTitle = {};
-    }
-  });
+  // Look up card thumbnails by piece title from the server-loaded gallery.
+  const imagesByTitle = $derived(
+    Object.fromEntries((data.pieces ?? []).map((p) => [p.title, p.thumbUrl]))
+  );
 </script>
 
 <svelte:head>
-  <title>Daniel Daugherty — Digital Artist</title>
+  <title>DDarty | Digital Artist</title>
   <meta name="description" content="Stylized digital art, including portraits, landscapes, and work made from your own photographs." />
 </svelte:head>
 
@@ -78,7 +71,7 @@
     <span class="eyebrow">A different set each visit</span>
     <h2 class="selection__title">Pulled at random from the archive</h2>
   </div>
-  <GalleryStrip limit={8} />
+  <GalleryStrip pieces={data.pieces ?? []} limit={8} />
 </section>
 
 <section class="highlights shell">

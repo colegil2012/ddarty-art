@@ -34,7 +34,7 @@ services:
     envs:
       # Now a REAL cross-origin URL — the frontend calls celtech for data.
       - key: PUBLIC_API_BASE
-        value: https://celtech-solutions.tech
+        value: https://celtechsolutions.tech
         scope: RUN_TIME
       - key: PUBLIC_SITE_SLUG
         value: ddarty

@@ -49,7 +49,7 @@
 
 <section class="hero" class:hero--in={mounted}>
   <div class="hero__inner shell">
-    <span class="eyebrow hero__eyebrow">Artist · Bum Fuck, Florida</span>
+    <span class="eyebrow hero__eyebrow">Artist · Clermont, Florida</span>
     <h1 class="hero__title">
       <span class="hero__line">Daniel</span>
       <span class="hero__line hero__line--indent">Daugherty</span>

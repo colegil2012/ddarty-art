@@ -195,7 +195,7 @@
       <div class="aside__note">
         <p>
           Prefer email? Write directly to
-          <a class="link-accent" href="mailto:studio@adaroswell.com">studio@adaroswell.com</a>.
+          <a class="link-accent" href="mailto:ddaugherty@ddarty.com">ddaugherty@ddarty.com</a>.
         </p>
       </div>
     </aside>

@@ -199,9 +199,8 @@ export const api = {
 
     return {
       aboutHeader: data.aboutHeader || undefined,
-      topSection: section(data.topSection),
-      midSection: section(data.midSection),
-      bottomSection: section(data.bottomSection),
+      bioSections: (data.bioSections ?? []).map(section).filter((s) => s.header || s.section),
+      serviceHeader: (data.serviceHeader ?? []).map(section).filter((s) => s.header || s.section),
       aboutImageUrl: data.aboutImageUrl || undefined,
       aboutImageCaption: data.aboutImageCaption || undefined,
       aboutImageAltText: data.aboutImageAltText || undefined

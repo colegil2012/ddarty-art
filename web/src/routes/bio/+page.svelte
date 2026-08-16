@@ -5,12 +5,8 @@
   let { data } = $props();
   const meta = $derived(data.meta ?? {});
 
-  // The three prose sections in render order (only those with content).
-  const sections = $derived(
-    [meta.topSection, meta.midSection, meta.bottomSection].filter(
-      (s) => s && (s.header || s.section)
-    )
-  );
+  // Ordered prose blocks from the portal (already filtered to non-empty).
+  const sections = $derived(meta.bioSections ?? []);
 
   // Show the portal copy when present; otherwise fall back to static chrome.
   const hasPortalCopy = $derived(sections.length > 0);
@@ -24,7 +20,7 @@
 <article class="bio">
   <header class="bio__head shell">
     <span class="eyebrow">About</span>
-    <h1 class="bio__title">{@html safehtml(meta.aboutHeader ?? 'Twelve years, one river')}</h1>
+    <h1 class="bio__title">{@html safehtml(meta.aboutHeader ?? 'Digital Artist')}</h1>
   </header>
 
   <div class="bio__body shell">
